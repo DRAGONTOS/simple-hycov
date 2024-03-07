@@ -574,28 +574,6 @@ void dispatch_leaveoverview(std::string arg) {
 
     if (pActiveWindow->m_bIsFloating) {
       g_pCompositor->changeWindowZOrder(pActiveWindow, true);
-    } else if (g_hycov_auto_fullscreen &&
-               want_auto_fullscren(pActiveWindow)) { // if enale auto_fullscreen
-                                                     // after exit overview
-      g_pCompositor->setWindowFullscreen(pActiveWindow, true,
-                                         FULLSCREEN_MAXIMIZED);
-    }
-  }
-
-  for (auto &n : g_hycov_OvGridLayout->m_lOvGridNodesData) {
-    // make all fullscrenn windwo restore it's status
-    if (n.ovbk_windowIsFullscreen) {
-      if (!g_pCompositor->m_pLastWindow) {
-        continue;
-      }
-
-      if (n.pWindow != g_pCompositor->m_pLastWindow &&
-          n.pWindow->m_iWorkspaceID ==
-              g_pCompositor->m_pLastWindow->m_iWorkspaceID) {
-        continue;
-      }
-      g_pCompositor->setWindowFullscreen(n.pWindow, true,
-                                         n.ovbk_windowFullscreenMode);
     }
   }
 
