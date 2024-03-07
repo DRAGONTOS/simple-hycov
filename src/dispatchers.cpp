@@ -119,8 +119,7 @@ CWindow *direction_select(std::string arg) {
     CWindow *pWindow = w.get();
 
     if (pTempClient == pWindow || pWindow->isHidden() ||
-        !pWindow->m_bIsMapped || pWindow->m_bFadingOut ||
-        pWindow->m_bIsFullscreen) {
+        !pWindow->m_bIsMapped || pWindow->m_bFadingOut) {
       continue;
     }
 
@@ -274,8 +273,7 @@ CWindow *get_circle_next_window(std::string arg) {
   for (auto &w : g_pCompositor->m_vWindows) {
     CWindow *pWindow = w.get();
     if (pTempClient->m_iWorkspaceID != pWindow->m_iWorkspaceID ||
-        pWindow->isHidden() || !pWindow->m_bIsMapped || pWindow->m_bFadingOut ||
-        pWindow->m_bIsFullscreen)
+        pWindow->isHidden() || !pWindow->m_bIsMapped || pWindow->m_bFadingOut)
       continue;
     if (next_ready)
       return pWindow;
@@ -286,8 +284,7 @@ CWindow *get_circle_next_window(std::string arg) {
   for (auto &w : g_pCompositor->m_vWindows) {
     CWindow *pWindow = w.get();
     if (pTempClient->m_iWorkspaceID != pWindow->m_iWorkspaceID ||
-        pWindow->isHidden() || !pWindow->m_bIsMapped || pWindow->m_bFadingOut ||
-        pWindow->m_bIsFullscreen)
+        pWindow->isHidden() || !pWindow->m_bIsMapped || pWindow->m_bFadingOut)
       continue;
     return pWindow;
   }
@@ -366,8 +363,7 @@ void dispatch_enteroverview(std::string arg) {
     g_hycov_forece_display_all_in_one_monitor = false;
   }
 
-  // ali clients exit fullscreen status before enter overview
-  CWindow *pFullscreenWindow;
+  // TESTOWO ali clients exit fullscreen status before enter overview
   CWindow *pActiveWindow = g_pCompositor->m_pLastWindow;
   CWorkspace *pActiveWorkspace;
   CMonitor *pActiveMonitor;
