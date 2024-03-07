@@ -62,11 +62,7 @@ void OvGridLayout::resizeNodeSizePos(SOvGridNodeData *node, int x, int y,
 void OvGridLayout::onWindowCreatedTiling(CWindow *pWindow,
                                          eDirection direction) {
   CMonitor *pTargetMonitor;
-  if (g_hycov_forece_display_all_in_one_monitor) {
-    pTargetMonitor = g_pCompositor->m_pLastMonitor;
-  } else {
     pTargetMonitor = g_pCompositor->getMonitorFromID(pWindow->m_iMonitorID);
-  }
 
   const auto pNode =
       &m_lOvGridNodesData.emplace_back(); // make a new node in list back
