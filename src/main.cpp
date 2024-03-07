@@ -22,7 +22,6 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   CONF("disable_workspace_change", 1L);
   CONF("disable_spawn", 0L);
   CONF("auto_exit", 1L);
-  CONF("auto_fullscreen", 0L);
   CONF("only_active_workspace", 0L);
   CONF("only_active_monitor", 0L);
   CONF("enable_alt_release_exit", 0L);
@@ -74,10 +73,6 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   static const auto *pAuto_exit_config =
       (Hyprlang::INT *const *)(HyprlandAPI::getConfigValue(
                                    PHANDLE, "plugin:hycov:auto_exit")
-                                   ->getDataStaticPtr());
-  static const auto *pAuto_fullscreen =
-      (Hyprlang::INT *const *)(HyprlandAPI::getConfigValue(
-                                   PHANDLE, "plugin:hycov:auto_fullscreen")
                                    ->getDataStaticPtr());
   static const auto *pOnly_active_workspace =
       (Hyprlang::INT *const *)(HyprlandAPI::getConfigValue(
@@ -142,7 +137,6 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   g_hycov_disable_workspace_change = **pDisable_workspace_change_config;
   g_hycov_disable_spawn = **pDisable_spawn_config;
   g_hycov_auto_exit = **pAuto_exit_config;
-  g_hycov_auto_fullscreen = **pAuto_fullscreen;
   g_hycov_only_active_workspace = **pOnly_active_workspace;
   g_hycov_only_active_monitor = **pOnly_active_monitor;
   g_hycov_enable_alt_release_exit = **pEnable_alt_release_exit;

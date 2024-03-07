@@ -583,23 +583,6 @@ void dispatch_leaveoverview(std::string arg) {
   }
 
   for (auto &n : g_hycov_OvGridLayout->m_lOvGridNodesData) {
-    // make all fullscrenn windwo restore it's status
-    if (n.ovbk_windowIsFullscreen) {
-      if (!g_pCompositor->m_pLastWindow) {
-        continue;
-      }
-
-      if (n.pWindow != g_pCompositor->m_pLastWindow &&
-          n.pWindow->m_iWorkspaceID ==
-              g_pCompositor->m_pLastWindow->m_iWorkspaceID) {
-        continue;
-      }
-      g_pCompositor->setWindowFullscreen(n.pWindow, true,
-                                         n.ovbk_windowFullscreenMode);
-    }
-  }
-
-  for (auto &n : g_hycov_OvGridLayout->m_lOvGridNodesData) {
     // if client not in old layout,create tiling of the client
     if (!n.isInOldLayout) {
       if (n.pWindow->m_bFadingOut || !n.pWindow->m_bIsMapped ||
