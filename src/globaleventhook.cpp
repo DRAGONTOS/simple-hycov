@@ -278,7 +278,7 @@ static void hkOnKeyboardKey(void *thisptr, wlr_keyboard_key_event *e,
   }
 }
 
-static void hkFullscreenActive(std::string args) {
+/* TESTOWO static void hkFullscreenActive(std::string args) {
   // auto exit overview and fullscreen window when toggle fullscreen in overview
   // mode
   hycov_log(LOG, "FullscreenActive hook toggle");
@@ -309,7 +309,7 @@ static void hkFullscreenActive(std::string args) {
                                        args == "1" ? FULLSCREEN_MAXIMIZED
                                                    : FULLSCREEN_FULL);
   }
-}
+}*/
 
 void hkHyprDwindleLayout_recalculateMonitor(void *thisptr, const int &ID) { ; }
 
@@ -464,12 +464,12 @@ void registerGlobalEventHook() {
   g_hycov_pSpawnHook = HyprlandAPI::createFunctionHook(
       PHANDLE, SpawnMethods[0].address, (void *)&hkSpawn);
 
-  // hook function of fullscreenActive
+  /* TESTOWO hook function of fullscreenActive
   static const auto FullscreenActiveMethods =
       HyprlandAPI::findFunctionsByName(PHANDLE, "fullscreenActive");
   g_hycov_pFullscreenActiveHook = HyprlandAPI::createFunctionHook(
       PHANDLE, FullscreenActiveMethods[0].address, (void *)&hkFullscreenActive);
-
+*/
   // register pEvent hook
   if (g_hycov_enable_hotarea) {
     g_hycov_pCInputManager_onMouseButtonHook->hook();
@@ -496,7 +496,8 @@ void registerGlobalEventHook() {
   if (g_hycov_enable_alt_release_exit) {
     g_hycov_pOnKeyboardKeyHook->hook();
   }
-
-  // enable hook fullscreenActive funciton
-  g_hycov_pFullscreenActiveHook->hook();
 }
+
+  /* TESTOWO enable hook fullscreenActive funciton
+  g_hycov_pFullscreenActiveHook->hook();
+}*/
