@@ -24,7 +24,7 @@ void switchToLayoutWithoutReleaseData(std::string layout) {
   hycov_log(ERR, "Unknown layout!");
 }
 
-bool want_auto_fullscren(CWindow *pWindow) {
+/*bool want_auto_fullscren(CWindow *pWindow) {
   int nodeNumInTargetWorkspace = 1;
 
   if (!pWindow) {
@@ -57,7 +57,7 @@ bool want_auto_fullscren(CWindow *pWindow) {
   } else {
     return false;
   }
-}
+}*/
 
 bool isDirectionArg(std::string arg) {
   if (arg == "l" || arg == "r" || arg == "u" || arg == "d" || arg == "left" ||
