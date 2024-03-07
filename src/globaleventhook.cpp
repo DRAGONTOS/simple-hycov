@@ -15,7 +15,6 @@ typedef void (*origOnSwipeEnd)(void *, wlr_pointer_swipe_end_event *e);
 typedef void (*origOnSwipeUpdate)(void *, wlr_pointer_swipe_update_event *e);
 typedef void (*origCWindow_onUnmap)(void *);
 typedef void (*origStartAnim)(void *, bool in, bool left, bool instant);
-typedef void (*origFullscreenActive)(std::string args);
 typedef void (*origOnKeyboardKey)(void *, wlr_keyboard_key_event *e,
                                   SKeyboard *pKeyboard);
 typedef void (*origCInputManager_onMouseButton)(void *,

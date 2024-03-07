@@ -28,7 +28,6 @@ inline int g_hycov_enable_gesture;
 inline int g_hycov_disable_workspace_change;
 inline int g_hycov_disable_spawn;
 inline int g_hycov_auto_exit;
-inline int g_hycov_auto_fullscreen;
 inline int g_hycov_only_active_workspace;
 inline int g_hycov_only_active_monitor;
 inline int g_hycov_enable_alt_release_exit;
@@ -53,7 +52,6 @@ inline CFunctionHook *g_hycov_pChangeworkspaceHook = nullptr;
 inline CFunctionHook *g_hycov_pMoveActiveToWorkspaceHook = nullptr;
 inline CFunctionHook *g_hycov_pSpawnHook = nullptr;
 inline CFunctionHook *g_hycov_pStartAnimHook = nullptr;
-inline CFunctionHook *g_hycov_pFullscreenActiveHook = nullptr;
 inline CFunctionHook *g_hycov_pOnKeyboardKeyHook = nullptr;
 inline CFunctionHook *g_hycov_pHyprDwindleLayout_recalculateMonitorHook =
     nullptr;

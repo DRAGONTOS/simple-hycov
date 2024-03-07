@@ -123,11 +123,6 @@ void OvGridLayout::onWindowCreatedTiling(CWindow *pWindow,
     pNode->pWindow->m_iMonitorID = pTargetMonitor->ID;
   }
 
-  /* clean fullscreen status
-  if (pWindow->m_bIsFullscreen) {
-    pWindow->m_bIsFullscreen = false;
-  }*/
-
   // clean floating status(only apply to old layout window)
   if (pWindow->m_bIsFloating && pNode->isInOldLayout) {
     pWindow->m_bIsFloating = false;

@@ -10,8 +10,6 @@ struct SOvGridNodeData {
   int ovbk_windowMonitorId = -1;
   std::string workspaceName;
   bool ovbk_windowIsFloating = false;
-  bool ovbk_windowIsFullscreen = false;
-  eFullscreenMode ovbk_windowFullscreenMode;
   Vector2D ovbk_position;
   Vector2D ovbk_size;
   Vector2D position;
