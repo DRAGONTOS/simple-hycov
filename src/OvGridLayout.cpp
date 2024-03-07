@@ -14,8 +14,7 @@ CWindow *OvGridLayout::getNextWindowCandidate(CWindow *plastWindow) {
         (g_pCompositor->m_pLastMonitor->specialWorkspaceID == 0 &&
          g_pCompositor->isWorkspaceSpecial(pWindow->m_iWorkspaceID)) ||
         pWindow->m_iWorkspaceID != plastWindow->m_iWorkspaceID ||
-        pWindow->isHidden() || !pWindow->m_bIsMapped || pWindow->m_bFadingOut ||
-        pWindow->m_bIsFullscreen)
+        pWindow->isHidden() || !pWindow->m_bIsMapped || pWindow->m_bFadingOut)
       continue;
     targetWindow = pWindow; // find the last window that is in same workspace
                             // with the remove window
@@ -101,11 +100,9 @@ void OvGridLayout::onWindowCreatedTiling(CWindow *pWindow,
   // record the window stats which are used by restore
   pNode->ovbk_windowMonitorId = pWindow->m_iMonitorID;
   pNode->ovbk_windowWorkspaceId = pWindow->m_iWorkspaceID;
-  pNode->ovbk_windowFullscreenMode = pWindowOriWorkspace->m_efFullscreenMode;
   pNode->ovbk_position = pWindow->m_vRealPosition.goalv();
   pNode->ovbk_size = pWindow->m_vRealSize.goalv();
   pNode->ovbk_windowIsFloating = pWindow->m_bIsFloating;
-  pNode->ovbk_windowIsFullscreen = pWindow->m_bIsFullscreen;
   pNode->ovbk_windowWorkspaceName = pWindowOriWorkspace->m_szName;
 
   // record the window style which are used by restore
@@ -126,10 +123,10 @@ void OvGridLayout::onWindowCreatedTiling(CWindow *pWindow,
     pNode->pWindow->m_iMonitorID = pTargetMonitor->ID;
   }
 
-  // clean fullscreen status
+  /* clean fullscreen status
   if (pWindow->m_bIsFullscreen) {
     pWindow->m_bIsFullscreen = false;
-  }
+  }*/
 
   // clean floating status(only apply to old layout window)
   if (pWindow->m_bIsFloating && pNode->isInOldLayout) {
@@ -378,11 +375,6 @@ void OvGridLayout::recalculateWindow(CWindow *pWindow) {
 
 void OvGridLayout::resizeActiveWindow(const Vector2D &pixResize,
                                       eRectCorner corner, CWindow *pWindow) {
-  ; // empty
-}
-
-void OvGridLayout::fullscreenRequestForWindow(CWindow *pWindow,
-                                              eFullscreenMode mode, bool on) {
   ; // empty
 }
 
