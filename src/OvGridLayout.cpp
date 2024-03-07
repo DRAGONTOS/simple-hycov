@@ -115,9 +115,7 @@ void OvGridLayout::onWindowCreatedTiling(CWindow *pWindow,
   if (!g_pCompositor->isWorkspaceSpecial(pWindow->m_iWorkspaceID) &&
       pNode->isInOldLayout &&
       (pWindowOriWorkspace->m_iID != pActiveWorkspace->m_iID ||
-       pWindowOriWorkspace->m_szName != pActiveWorkspace->m_szName) &&
-      (!g_hycov_only_active_workspace || g_hycov_forece_display_all ||
-       g_hycov_forece_display_all_in_one_monitor)) {
+       pWindowOriWorkspace->m_szName != pActiveWorkspace->m_szName) && !g_hycov_only_active_workspace) {
     pNode->workspaceID = pWindow->m_iWorkspaceID = pActiveWorkspace->m_iID;
     pNode->workspaceName = pActiveWorkspace->m_szName;
     pNode->pWindow->m_iMonitorID = pTargetMonitor->ID;
@@ -137,30 +135,6 @@ void OvGridLayout::removeOldLayoutData(CWindow *pWindow) {
   std::string *configLayoutName = &g_hycov_configLayoutName;
   switchToLayoutWithoutReleaseData(*configLayoutName);
   hycov_log(LOG, "remove data of old layout:{}", *configLayoutName);
-
-  if (*configLayoutName == "dwindle") {
-    // disable render client of old layout
-    g_hycov_pHyprDwindleLayout_recalculateMonitorHook->hook();
-    g_hycov_pHyprDwindleLayout_recalculateWindowHook->hook();
-    g_hycov_pSDwindleNodeData_recalcSizePosRecursiveHook->hook();
-
-    // only remove data,not render anything,becaust still in overview
-    g_pLayoutManager->getCurrentLayout()->onWindowRemovedTiling(pWindow);
-
-    g_hycov_pSDwindleNodeData_recalcSizePosRecursiveHook->unhook();
-    g_hycov_pHyprDwindleLayout_recalculateWindowHook->unhook();
-    g_hycov_pHyprDwindleLayout_recalculateMonitorHook->unhook();
-  } else if (*configLayoutName == "master") {
-    g_hycov_pHyprMasterLayout_recalculateMonitorHook->hook();
-
-    g_pLayoutManager->getCurrentLayout()->onWindowRemovedTiling(pWindow);
-
-    g_hycov_pHyprMasterLayout_recalculateMonitorHook->unhook();
-  } else {
-    // may be not support other layout
-    hycov_log(ERR, "unknow old layout:{}", *configLayoutName);
-    g_pLayoutManager->getCurrentLayout()->onWindowRemovedTiling(pWindow);
-  }
 
   switchToLayoutWithoutReleaseData("ovgrid");
 }
@@ -460,8 +434,7 @@ void OvGridLayout::onEnable() {
       continue;
 
     if (pWindow->m_iMonitorID != g_pCompositor->m_pLastMonitor->ID &&
-        g_hycov_only_active_monitor && !g_hycov_forece_display_all &&
-        !g_hycov_forece_display_all_in_one_monitor)
+        g_hycov_only_active_monitor)
       continue;
 
     const auto pNode = &m_lSOldLayoutRecordNodeData.emplace_back();
