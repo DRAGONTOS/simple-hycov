@@ -100,10 +100,10 @@ CWindow *direction_select(std::string arg) {
   if (!pTempClient) {
     delete[] pTempCWindows;
     return nullptr;
-  } else if (pTempClient->m_bIsFullscreen) {
+  } /* TESTOWO else if (pTempClient->m_bIsFullscreen) {
     delete[] pTempCWindows;
     return nullptr;
-  }
+  }*/
 
   if (!isDirectionArg(arg)) {
     hycov_log(
@@ -390,7 +390,7 @@ void dispatch_enteroverview(std::string arg) {
   hycov_log(LOG, "enter overview");
   g_hycov_isOverView = true;
 
-  // make all fullscreen window exit fullscreen state
+  /* TESTOWO make all fullscreen window exit fullscreen state
   for (auto &w : g_pCompositor->m_vWorkspaces) {
     CWorkspace *pWorkspace = w.get();
     if (pWorkspace->m_bHasFullscreenWindow) {
@@ -402,7 +402,7 @@ void dispatch_enteroverview(std::string arg) {
       // let overview know the client is a fullscreen before
       pFullscreenWindow->m_bIsFullscreen = true;
     }
-  }
+  }*/
 
   // enter overview layout
   //  g_pLayoutManager->switchToLayout("ovgrid");
