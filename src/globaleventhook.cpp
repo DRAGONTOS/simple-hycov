@@ -3,13 +3,7 @@
 #include "OvGridLayout.hpp"
 #include "dispatchers.hpp"
 #include <hyprland/src/SharedDefs.hpp>
-#include <regex>
-#include <set>
 
-// std::unique_ptr<HOOK_CALLBACK_FN> mouseMoveHookPtr =
-// std::make_unique<HOOK_CALLBACK_FN>(mouseMoveHook);
-// std::unique_ptr<HOOK_CALLBACK_FN> mouseButtonHookPtr =
-// std::make_unique<HOOK_CALLBACK_FN>(mouseButtonHook);
 typedef void (*origOnSwipeBegin)(void *, wlr_pointer_swipe_begin_event *e);
 typedef void (*origOnSwipeEnd)(void *, wlr_pointer_swipe_end_event *e);
 typedef void (*origOnSwipeUpdate)(void *, wlr_pointer_swipe_update_event *e);
@@ -202,7 +196,7 @@ static void hkCWindow_onUnmap(void *thisptr) {
 
   // after done original thing,The workspace automatically exit overview if no
   // client exists
-  auto nodeNumInSameMonitor = 0;
+  auto nodeNumInSameMonitor = 1;
   auto nodeNumInSameWorkspace = 0;
   for (auto &n : g_hycov_OvGridLayout->m_lOvGridNodesData) {
     if (n.pWindow->m_iMonitorID == g_pCompositor->m_pLastMonitor->ID &&
@@ -257,8 +251,6 @@ static void hkStartAnim(void *thisptr, bool in, bool left,
   } else {
     (*(origStartAnim)g_hycov_pStartAnimHook->m_pOriginal)(thisptr, in, left,
                                                           instant);
-    // hycov_log(LOG,"hook startAnim,enable workspace change
-    // anim,in:{},isOverview:{}",in,g_hycov_isOverView);
   }
 }
 
@@ -276,39 +268,6 @@ static void hkOnKeyboardKey(void *thisptr, wlr_keyboard_key_event *e,
     hycov_log(LOG, "alt key release toggle leave overview");
   }
 }
-
-/* TESTOWO static void hkFullscreenActive(std::string args) {
-  // auto exit overview and fullscreen window when toggle fullscreen in overview
-  // mode
-  hycov_log(LOG, "FullscreenActive hook toggle");
-
-  // (*(origFullscreenActive)g_hycov_pFullscreenActiveHook->m_pOriginal)(args);
-  const auto pWindow = g_pCompositor->m_pLastWindow;
-
-  if (!pWindow)
-    return;
-
-  if (g_pCompositor->isWorkspaceSpecial(pWindow->m_iWorkspaceID))
-    return;
-
-  if (g_hycov_isOverView && want_auto_fullscren(pWindow) &&
-      !g_hycov_auto_fullscreen) {
-    hycov_log(LOG, "FullscreenActive toggle leave overview with fullscreen");
-    dispatch_toggleoverview("internalToggle");
-    g_pCompositor->setWindowFullscreen(pWindow, !pWindow->m_bIsFullscreen,
-                                       args == "1" ? FULLSCREEN_MAXIMIZED
-                                                   : FULLSCREEN_FULL);
-  } else if (g_hycov_isOverView &&
-             (!want_auto_fullscren(pWindow) || g_hycov_auto_fullscreen)) {
-    hycov_log(LOG, "FullscreenActive toggle leave overview without fullscreen");
-    dispatch_toggleoverview("internalToggle");
-  } else {
-    hycov_log(LOG, "FullscreenActive set fullscreen");
-    g_pCompositor->setWindowFullscreen(pWindow, !pWindow->m_bIsFullscreen,
-                                       args == "1" ? FULLSCREEN_MAXIMIZED
-                                                   : FULLSCREEN_FULL);
-  }
-}*/
 
 void hkHyprDwindleLayout_recalculateMonitor(void *thisptr, const int &ID) { ; }
 
@@ -463,12 +422,6 @@ void registerGlobalEventHook() {
   g_hycov_pSpawnHook = HyprlandAPI::createFunctionHook(
       PHANDLE, SpawnMethods[0].address, (void *)&hkSpawn);
 
-  /* TESTOWO hook function of fullscreenActive
-  static const auto FullscreenActiveMethods =
-      HyprlandAPI::findFunctionsByName(PHANDLE, "fullscreenActive");
-  g_hycov_pFullscreenActiveHook = HyprlandAPI::createFunctionHook(
-      PHANDLE, FullscreenActiveMethods[0].address, (void *)&hkFullscreenActive);
-*/
   // register pEvent hook
   if (g_hycov_enable_hotarea) {
     g_hycov_pCInputManager_onMouseButtonHook->hook();
@@ -496,7 +449,3 @@ void registerGlobalEventHook() {
     g_hycov_pOnKeyboardKeyHook->hook();
   }
 }
-
-  /* TESTOWO enable hook fullscreenActive funciton
-  g_hycov_pFullscreenActiveHook->hook();
-}*/

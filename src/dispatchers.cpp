@@ -24,41 +24,6 @@ void switchToLayoutWithoutReleaseData(std::string layout) {
   hycov_log(ERR, "Unknown layout!");
 }
 
-/*bool want_auto_fullscren(CWindow *pWindow) {
-  int nodeNumInTargetWorkspace = 1;
-
-  if (!pWindow) {
-    return false;
-  }
-
-  auto pNode = g_hycov_OvGridLayout->getNodeFromWindow(pWindow);
-
-  if (!pNode) {
-    return true;
-  }
-
-  // if client is fullscreen before,don't make it fullscreen
-  if (pNode->ovbk_windowIsFullscreen) {
-    return false;
-  }
-
-  // caculate the number of clients that will be in the same workspace with
-  // pWindow(don't contain itself)
-  for (auto &n : g_hycov_OvGridLayout->m_lOvGridNodesData) {
-    if (n.pWindow != pNode->pWindow &&
-        n.ovbk_windowWorkspaceId == pNode->ovbk_windowWorkspaceId) {
-      nodeNumInTargetWorkspace++;
-    }
-  }
-
-  // if only one client in workspace(pWindow itself), don't make it fullscreen
-  if (nodeNumInTargetWorkspace > 1) {
-    return true;
-  } else {
-    return false;
-  }
-}*/
-
 bool isDirectionArg(std::string arg) {
   if (arg == "l" || arg == "r" || arg == "u" || arg == "d" || arg == "left" ||
       arg == "right" || arg == "up" || arg == "down" || arg == "leftcross" ||
@@ -100,10 +65,7 @@ CWindow *direction_select(std::string arg) {
   if (!pTempClient) {
     delete[] pTempCWindows;
     return nullptr;
-  } /* TESTOWO else if (pTempClient->m_bIsFullscreen) {
-    delete[] pTempCWindows;
-    return nullptr;
-  }*/
+  }
 
   if (!isDirectionArg(arg)) {
     hycov_log(
@@ -345,23 +307,8 @@ void dispatch_enteroverview(std::string arg) {
   if (pMonitor->specialWorkspaceID != 0)
     pMonitor->setSpecialWorkspace(nullptr);
 
-  // force display all workspace window,ignore `only_active_worksapce` and
-  // `only_active_monitor`
-  if (arg == "forceall") {
-    g_hycov_forece_display_all = true;
-    hycov_log(LOG, "force display all clients");
-  } else {
-    g_hycov_forece_display_all = false;
-  }
-
   // force display all workspace window in one monitor,ignore
   // `only_active_worksapce` and `only_active_monitor`
-  if (arg == "forceallinone") {
-    g_hycov_forece_display_all_in_one_monitor = true;
-    hycov_log(LOG, "force display all clients in one monitor");
-  } else {
-    g_hycov_forece_display_all_in_one_monitor = false;
-  }
 
   // TESTOWO ali clients exit fullscreen status before enter overview
   CWindow *pActiveWindow = g_pCompositor->m_pLastWindow;
@@ -386,20 +333,6 @@ void dispatch_enteroverview(std::string arg) {
   hycov_log(LOG, "enter overview");
   g_hycov_isOverView = true;
 
-  /* TESTOWO make all fullscreen window exit fullscreen state
-  for (auto &w : g_pCompositor->m_vWorkspaces) {
-    CWorkspace *pWorkspace = w.get();
-    if (pWorkspace->m_bHasFullscreenWindow) {
-      pFullscreenWindow =
-          g_pCompositor->getFullscreenWindowOnWorkspace(pWorkspace->m_iID);
-      g_pCompositor->setWindowFullscreen(pFullscreenWindow, false,
-                                         FULLSCREEN_FULL);
-
-      // let overview know the client is a fullscreen before
-      pFullscreenWindow->m_bIsFullscreen = true;
-    }
-  }*/
-
   // enter overview layout
   //  g_pLayoutManager->switchToLayout("ovgrid");
   switchToLayoutWithoutReleaseData("ovgrid");
@@ -413,25 +346,6 @@ void dispatch_enteroverview(std::string arg) {
   workspaceIdBackup = pActiveWorkspace->m_iID;
   g_pCompositor->renameWorkspace(pActiveMonitor->activeWorkspace,
                                  overviewWorksapceName);
-
-  // Preserve window focus
-  if (pActiveWindow) {
-    g_pCompositor->focusWindow(
-        pActiveWindow); // restore the focus to before active window
-
-  } else { // when no window is showed in current window,find from other
-           // workspace to focus(exclude special workspace)
-    for (auto &w : g_pCompositor->m_vWindows) {
-      CWindow *pWindow = w.get();
-      if (g_pCompositor->isWorkspaceSpecial(pWindow->m_iWorkspaceID) ||
-          pWindow->isHidden() || !pWindow->m_bIsMapped ||
-          pWindow->m_bFadingOut)
-        continue;
-      g_pCompositor->focusWindow(
-          pWindow); // find the last window that is in same workspace with the
-                    // remove window
-    }
-  }
 
   // disable changeworkspace
   if (g_hycov_disable_workspace_change) {
@@ -506,49 +420,6 @@ void dispatch_leaveoverview(std::string arg) {
     n.pWindow->m_sSpecialRenderData.decorate = n.ovbk_windowIsWithDecorate;
     n.pWindow->m_sSpecialRenderData.rounding = n.ovbk_windowIsWithRounding;
     n.pWindow->m_sSpecialRenderData.shadow = n.ovbk_windowIsWithShadow;
-
-    if (n.ovbk_windowIsFloating) {
-      // make floating client restore it's floating status
-      n.pWindow->m_bIsFloating = true;
-      g_pLayoutManager->getCurrentLayout()->onWindowCreatedFloating(n.pWindow);
-
-      // make floating client restore it's position and size
-      n.pWindow->m_vRealSize = n.ovbk_size;
-      n.pWindow->m_vRealPosition = n.ovbk_position;
-
-      auto calcPos = n.ovbk_position;
-      auto calcSize = n.ovbk_size;
-
-      n.pWindow->m_vRealSize = calcSize;
-      n.pWindow->m_vRealPosition = calcPos;
-
-      g_pXWaylandManager->setWindowSize(n.pWindow, calcSize);
-
-    } else if (!n.ovbk_windowIsFloating) {
-      // make nofloating client restore it's position and size
-      n.pWindow->m_vRealSize = n.ovbk_size;
-      n.pWindow->m_vRealPosition = n.ovbk_position;
-
-      auto calcPos = n.ovbk_position;
-      auto calcSize = n.ovbk_size;
-
-      n.pWindow->m_vRealSize = calcSize;
-      n.pWindow->m_vRealPosition = calcPos;
-
-      // some app sometime can't catch window size to restore,don't use dirty
-      // data,remove refer data in old layout.
-      if (n.ovbk_size.x == 0 && n.ovbk_size.y == 0 && n.isInOldLayout) {
-        g_hycov_OvGridLayout->removeOldLayoutData(n.pWindow);
-        n.isInOldLayout = false;
-      } else {
-        g_pXWaylandManager->setWindowSize(n.pWindow, calcSize);
-      }
-
-      // restore active window in group
-      if (n.isGroupActive) {
-        n.pWindow->setGroupCurrent(n.pWindow);
-      }
-    }
   }
 
   // exit overview layout,go back to old layout
@@ -558,24 +429,6 @@ void dispatch_leaveoverview(std::string arg) {
   // g_pLayoutManager->getCurrentLayout()->onDisable();
   switchToLayoutWithoutReleaseData(*configLayoutName);
   recalculateAllMonitor();
-
-  // Preserve window focus
-  if (pActiveWindow) {
-    if (g_hycov_forece_display_all_in_one_monitor &&
-        pActiveWindow->m_iMonitorID != g_pCompositor->m_pLastMonitor->ID) {
-      warpcursor_and_focus_to_window(
-          pActiveWindow); // restore the focus to before active window.when
-                          // cross monitor,warpcursor to monitor of current
-                          // active window is in
-    } else {
-      g_pCompositor->focusWindow(
-          pActiveWindow); // restore the focus to before active window
-    }
-
-    if (pActiveWindow->m_bIsFloating) {
-      g_pCompositor->changeWindowZOrder(pActiveWindow, true);
-    }
-  }
 
   for (auto &n : g_hycov_OvGridLayout->m_lOvGridNodesData) {
     // if client not in old layout,create tiling of the client

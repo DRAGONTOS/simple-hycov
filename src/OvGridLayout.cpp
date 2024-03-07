@@ -62,7 +62,7 @@ void OvGridLayout::resizeNodeSizePos(SOvGridNodeData *node, int x, int y,
 void OvGridLayout::onWindowCreatedTiling(CWindow *pWindow,
                                          eDirection direction) {
   CMonitor *pTargetMonitor;
-    pTargetMonitor = g_pCompositor->getMonitorFromID(pWindow->m_iMonitorID);
+  pTargetMonitor = g_pCompositor->getMonitorFromID(pWindow->m_iMonitorID);
 
   const auto pNode =
       &m_lOvGridNodesData.emplace_back(); // make a new node in list back
@@ -98,7 +98,6 @@ void OvGridLayout::onWindowCreatedTiling(CWindow *pWindow,
   pNode->ovbk_windowWorkspaceId = pWindow->m_iWorkspaceID;
   pNode->ovbk_position = pWindow->m_vRealPosition.goalv();
   pNode->ovbk_size = pWindow->m_vRealSize.goalv();
-  pNode->ovbk_windowIsFloating = pWindow->m_bIsFloating;
   pNode->ovbk_windowWorkspaceName = pWindowOriWorkspace->m_szName;
 
   // record the window style which are used by restore
@@ -111,19 +110,12 @@ void OvGridLayout::onWindowCreatedTiling(CWindow *pWindow,
   if (!g_pCompositor->isWorkspaceSpecial(pWindow->m_iWorkspaceID) &&
       pNode->isInOldLayout &&
       (pWindowOriWorkspace->m_iID != pActiveWorkspace->m_iID ||
-       pWindowOriWorkspace->m_szName != pActiveWorkspace->m_szName) && !g_hycov_only_active_workspace) {
+       pWindowOriWorkspace->m_szName != pActiveWorkspace->m_szName) &&
+      !g_hycov_only_active_workspace) {
     pNode->workspaceID = pWindow->m_iWorkspaceID = pActiveWorkspace->m_iID;
     pNode->workspaceName = pActiveWorkspace->m_szName;
     pNode->pWindow->m_iMonitorID = pTargetMonitor->ID;
   }
-
-  // clean floating status(only apply to old layout window)
-  if (pWindow->m_bIsFloating && pNode->isInOldLayout) {
-    pWindow->m_bIsFloating = false;
-    pWindow->updateDynamicRules();
-  }
-
-  recalculateMonitor(pWindow->m_iMonitorID);
 }
 
 void OvGridLayout::removeOldLayoutData(CWindow *pWindow) {
@@ -334,41 +326,7 @@ void OvGridLayout::applyNodeDataToWindow(SOvGridNodeData *pNode) {
   pWindow->updateWindowDecos();
 }
 
-void OvGridLayout::recalculateWindow(CWindow *pWindow) {
-  ; // empty
-}
-
-void OvGridLayout::resizeActiveWindow(const Vector2D &pixResize,
-                                      eRectCorner corner, CWindow *pWindow) {
-  ; // empty
-}
-
-std::any OvGridLayout::layoutMessage(SLayoutMessageHeader header,
-                                     std::string content) {
-  return "";
-}
-
-SWindowRenderLayoutHints OvGridLayout::requestRenderHints(CWindow *pWindow) {
-  return {};
-}
-
-void OvGridLayout::switchWindows(CWindow *pWindowA, CWindow *pWindowB) {
-  ; // empty
-}
-
-void OvGridLayout::alterSplitRatio(CWindow *pWindow, float delta, bool exact) {
-  ; // empty
-}
-
 std::string OvGridLayout::getLayoutName() { return "ovgrid"; }
-
-void OvGridLayout::replaceWindowDataWith(CWindow *from, CWindow *to) {
-  ; // empty
-}
-
-void OvGridLayout::moveWindowTo(CWindow *, const std::string &dir) {
-  ; // empty
-}
 
 void OvGridLayout::changeToActivceSourceWorkspace() {
   CWindow *pWindow = nullptr;
