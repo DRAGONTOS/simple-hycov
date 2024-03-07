@@ -425,7 +425,7 @@ void dispatch_enteroverview(std::string arg) {
       CWindow *pWindow = w.get();
       if (g_pCompositor->isWorkspaceSpecial(pWindow->m_iWorkspaceID) ||
           pWindow->isHidden() || !pWindow->m_bIsMapped ||
-          pWindow->m_bFadingOut || pWindow->m_bIsFullscreen)
+          pWindow->m_bFadingOut)
         continue;
       g_pCompositor->focusWindow(
           pWindow); // find the last window that is in same workspace with the
@@ -524,7 +524,7 @@ void dispatch_leaveoverview(std::string arg) {
 
       g_pXWaylandManager->setWindowSize(n.pWindow, calcSize);
 
-    } else if (!n.ovbk_windowIsFloating && !n.ovbk_windowIsFullscreen) {
+    } else if (!n.ovbk_windowIsFloating) {
       // make nofloating client restore it's position and size
       n.pWindow->m_vRealSize = n.ovbk_size;
       n.pWindow->m_vRealPosition = n.ovbk_position;
@@ -579,6 +579,23 @@ void dispatch_leaveoverview(std::string arg) {
                                                      // after exit overview
       g_pCompositor->setWindowFullscreen(pActiveWindow, true,
                                          FULLSCREEN_MAXIMIZED);
+    }
+  }
+
+  for (auto &n : g_hycov_OvGridLayout->m_lOvGridNodesData) {
+    // make all fullscrenn windwo restore it's status
+    if (n.ovbk_windowIsFullscreen) {
+      if (!g_pCompositor->m_pLastWindow) {
+        continue;
+      }
+
+      if (n.pWindow != g_pCompositor->m_pLastWindow &&
+          n.pWindow->m_iWorkspaceID ==
+              g_pCompositor->m_pLastWindow->m_iWorkspaceID) {
+        continue;
+      }
+      g_pCompositor->setWindowFullscreen(n.pWindow, true,
+                                         n.ovbk_windowFullscreenMode);
     }
   }
 
